@@ -205,50 +205,41 @@ public class MyPlainAdEventListener extends AdEventListener {
 	<activity android:name="com.xender.ad.splash.view.SplashAdActivity" />    
 ```
 
-> You need to add your own launch screen first. Then preload and show Splash AD.
->
-> Preload Splash AD
+> Get Splash AD
 
 ``` java
-    PlainAdSDK.preloadSplashAd(context, "Your Splash SlotID", new MyPlainAdEventListener() {
+    /**
+     * @param context    context
+     * @param slotId     slotId
+     * @param listener callback listener
+     * @param timeOut timeOut  timeout time (in milliseconds)
+     */
+    PlainAdSDK.getSplashAd(context, Config.slotIdNative, new MyPlainAdEventListener() {
     
         @Override
         public void onReceiveAdSucceed() {
             Log.d(TAG, "Splash Ad Loaded.");
-            show();//show splash ad
-            finish();// close current activity
         }
     
         @Override
-        public void onReceiveAdFailed(String error) {
+        public void onReceiveAdFailed(String result) {
             if (result != null)
-                Log.e(TAG, "onReceiveAdFailed errorMsg=" + error);
-        }     
+                Log.e(TAG, "onReceiveAdFailed errorMsg=" + result);
+        }
     
-    
-    });
-```
-
-> Show ad from cache
-
-```java
-private void show() {
-
-    PlainAdSDK.showSplashAd("Your Splash SlotID", new MyPlainAdEventListener() {
         @Override
-	//impression, you can add customeView here showing your app name and icon (optional)
         public void onShowSucceed(PANative result) {
+            Log.d(TAG, "onShowSucceed");
             if (result != null) {
                 SplashView splashView = (SplashView) result;
-
+    
                 /*
                  * There are two ways to add a custom view
                  * inflate SplashView.getCustomParentView() or SplashView.addCustomView(view)
                  */
-                 
                 //1
                 //LayoutInflater.from(getContext()).inflate(R.layout.custom_splash_layout, splashView.getCustomParentView(), true);
-
+    
                 //2
                 LinearLayout linearLayout = new LinearLayout(result.getContext());
                 linearLayout.setGravity(Gravity.CENTER);
@@ -267,21 +258,24 @@ private void show() {
                 splashView.addCustomView(linearLayout);
             }
         }
-
+    
         @Override
-	//click
+        public void onLandPageShown(PANative result) {
+            Log.d(TAG, "onLandPageShown");
+        }
+    
+        @Override
         public void onAdClicked(PANative result) {
-
+            Log.d(TAG, "onAdClicked");
         }
-
+    
         @Override
-	//close
         public void onAdClosed(PANative result) {
-
-        }
-    });
-}
-
+            Log.d(TAG, "onAdClosed");
+        } 
+                              
+    
+    }, TIME_OUT);
 ```
 
 
